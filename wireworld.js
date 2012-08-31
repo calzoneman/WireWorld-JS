@@ -208,6 +208,17 @@ function relMouseCoords(event){
         return {x:canvasX, y:canvasY};
 }
 
+function startRun() {
+    timer = setInterval(function() { grid.runStep(); }, 500);
+    $('#run').html('Stop');
+}
+
+function stopRun() {
+    clearInterval(timer);
+    timer = null;
+    $('#run').html('Run');
+}
+
 
 var $document = $(document);
 var context = $('#game')[0].getContext('2d');
@@ -215,6 +226,7 @@ var width = 16;
 var height = 16;
 var grid = new CellGrid(width, height);
 var player = new Player(grid);
+var timer = null;
 $('#game')[0].width = width * (CELL_SIZE + 1) + 1;
 $('#game')[0].height = height * (CELL_SIZE + 1) + 1;
 
@@ -224,7 +236,8 @@ $('#game').mouseup(function(event) { return player.mouseup(event); });
 $('#game').mousemove(function(event) { return player.mousemove(event); });
 $document.keypress(function(event) { player.keypress(event); });
 $('#runStep').click(function() { grid.runStep(); });
-$('#reset').click(function() { grid.reset(); });
+$('#reset').click(function() { grid.reset(); stopRun(); });
+$('#run').click(function() { if (timer) stopRun(); else startRun(); });
 
 // Rendering
 setInterval(function() { grid.draw(context); }, 1000/10);
